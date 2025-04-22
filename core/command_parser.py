@@ -10,7 +10,7 @@ class CommandParser:
         {
             "command": str,          
             "args": List[str],        
-            "kwargs": Dict[str, str], 
+            "kwargs": Dict[str], 
             "flags": List[str]        
         }
         """
@@ -38,7 +38,15 @@ class CommandParser:
                 continue
 
             args.append(part)
-        return {"command": command, "args": args, "kwargs": kwargs, "flags": flags}
+        return {
+            "input_string": input_string,
+                "parse": {
+                    "command": command,
+                    "args": args,
+                    "kwargs": kwargs,
+                    "flags": flags
+                    }
+                }
     
 
 
@@ -67,6 +75,3 @@ class CommandParser:
             parts.append(''.join(current))
 
         return parts 
-
-test = CommandParser()
-print(test.parse("download 334 wewewe --565='d aqw eqe qe'  -v -d -r"))
