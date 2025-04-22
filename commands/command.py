@@ -24,7 +24,7 @@ class Command:
         self.aliases = []
         self.subcommands = {}
         self.argument = []
-        self.kwargs = {}
+        self.kwargs = []
         self.flags = []
     
     def add_subcommand(self, command: 'Command'):
@@ -38,14 +38,17 @@ class Command:
     def register_argument():
         pass
 
-    def validate(self, args, kwargs, flags):
+    def validate(self, parse, context):
         pass
-    def execute(self, args, kwargs, flags, context):
-        if args[0] in self.subcommands:
-            return self.subcommands[args[0]].execute(args[1:], kwargs, flags, context)
-        return self.execute_main(args, kwargs, flags, context)
+    def execute(self, parse, context):
+        if parse['parse']['args'][0] in self.subcommands:
+            return self.subcommands[parse['parse']['args'][0]].execute(parse['parse']['args'][1:],
+                                                                       parse['parse']['kwargs'],
+                                                                       parse['parse']['flags'],
+                                                                       context)
+        return self.execute_main(parse['parse']['args'], parse['parse']['kwargs'], parse['parse']['flags'], context)
 
-    def execute_main(self, args, kwargs, flags, context):
+    def execute_main(self, parse, context):
 
         raise NotImplementedError("Command.execute() must be implemented")
         
