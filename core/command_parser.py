@@ -6,7 +6,6 @@ class CommandParser:
         self.flag_pattern = re.compile(r'-(\w+)')
 
     def parse(self, input_string: str):
-
         """
         {
             "command": str,          
@@ -20,7 +19,6 @@ class CommandParser:
         parts = self._split_input(input_string)
         if not parts:
             return {"command": "", "args": [], "kwargs": {}, "flags": []}
-        print(parts)
 
         command = parts[0]
         args = []
@@ -29,7 +27,6 @@ class CommandParser:
 
         for part in parts[1:]:
             arg_match = self.arg_pattern.match(part)
-            print(part)
             if arg_match:
                 key, value = arg_match.groups()
                 kwargs[key] = value

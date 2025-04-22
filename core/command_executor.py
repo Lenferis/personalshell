@@ -4,10 +4,10 @@ class CommandExecutor:
         self.commands_aliases = {}
     
     def register(self, Command):
-        self.commands[Command.name] = Command
-        for alias in Command.aliases:
-            self.commands_aliases[alias] = Command
-
+        self.commands[Command.name] = {
+            "command": Command,
+            "aliases": Command.aliases
+        }
     def execute(self, name, args, kwargs, flags, context):
         if name not in self.commands_aliases:
             return 0
