@@ -1,11 +1,13 @@
 from enum import Enum, auto
-from typing import Any
+from typing import Any, Dict, List
+from dataclasses import dataclass
 
 class ArgumentType(Enum):
     POSITIONAL = auto()
     NAMED = auto()
     FLAGS = auto()
 
+@dataclass
 class CommandArgument:
     name: str
     arg_type: ArgumentType
@@ -13,46 +15,65 @@ class CommandArgument:
     default: Any = False
     help: str = "No description provided"
 
-
-
-
 class Command:
+    """
+    Command base class (template)
+    """
     def __init__(self):
-        self.name = ""
-        self.description = "No description provided"
-        self.usage = ""
-        self.aliases = []
-        self.subcommands = {}
-        self.argument = []
-        self.kwargs = []
-        self.flags = []
+        self.name: str = ""
+        self.description: str = "No description provided"
+        self.usage: str = ""
+        self.aliases: List[str] = []
+        self.subcommands: Dict[str] = {}
+        self.argument: List[str] = []
     
-    def add_subcommand(self, command: 'Command'):
+    def add_subcommand(self, command: 'Command') -> None:
+        """
+        Method to add a subcommand for the given command. Similar to registration with the command executor
+        """
         self.subcommands[command.name] = command
         for alias in command.aliases:
             self.subcommands[alias] = command
 
-    def add_argument(self, name, arg_type, required: bool = True, default: Any = False, help: str = "No description provided"):
+    def add_argument(self, name: str, arg_type: ArgumentType, required: bool = True, default: Any = False, help: str = "No description provided") -> CommandArgument:
+        """
+        Adding an argument to the argument list. An argument is based on a data structure, the Argument class.
+        They are divided into three types: positional, named and flags
+        """
         return self.argument.append(CommandArgument(name, arg_type, required, default, help))
     
-    def register_argument():
+    def register_argument(self) -> None:
+        """
+        Function where in the future, in the class that inherited, will be the registration of all arguments.
+        Called in __init__
+        """
         pass
 
-    def validate(self, parse, context):
+    def validate(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
+        """
+        This is where the validation for the team will be prescribed.
+        For example, validation of arguments
+        """
         pass
-    def execute(self, parse, context):
+    def execute(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
+        """
+        The function of a command performer.
+        It checks if there is a subcommand in the arguments and if there is, passes control to it, otherwise it performs its main function of the executor.
+        """
         if parse['parse']['args'][0] in self.subcommands:
-            return self.subcommands[parse['parse']['args'][0]].execute(parse['parse']['args'][1:],
-                                                                       parse['parse']['kwargs'],
-                                                                       parse['parse']['flags'],
-                                                                       context)
-        return self.execute_main(parse['parse']['args'], parse['parse']['kwargs'], parse['parse']['flags'], context)
+            return self.subcommands[parse['parse']['args'][0]].execute(parse, context)
+        return self.execute_main(parse, context)
 
-    def execute_main(self, parse, context):
-
+    def execute_main(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
+        """
+        The main function of the executor. The executor function transfers control to it if no other options are found
+        """
         raise NotImplementedError("Command.execute() must be implemented")
         
-    def help(self) -> str:
+    def help(self) -> Dict[str, Any]:
+        """
+        Function that creates a help(parameters) statement of the command
+        """
         help_list = [
             f"Command: {self.name}",
             f"Description: {self.description}",
@@ -60,11 +81,23 @@ class Command:
             "Arguments:",
         ]
         for arg in self.argument:
-            req = "" if arg.required == True else ""
-            help_list.append(self.format_arg_name(arg))
+            req = "(compulsory)" if arg.required == True else "(optional)"
+            help_list.append(f"  {self.format_arg_name(arg)}    {arg.help} {req}")
         help_list.append(f"Aliases: {', '.join(self.aliases)}")
-        return help_list
-    def generate_usage(self):
+
+        help_list_subcom = set()
+        for key in self.subcommands.keys():
+            help_list_subcom.add(key)
+        help_list.append(f"Subcommand:")
+
+        for scom in help_list_subcom:
+            help_list.append(f"  {scom.name}    {scom.description}")
+        
+        return '\n'.join(help_list)
+    def generate_usage(self) -> str:
+        """
+        Creates a usage string for the command, inserted into help
+        """
         parts = [self.name]
 
         for arg in self.argument:
@@ -76,10 +109,13 @@ class Command:
                 parts.append(f"-{arg.name}")
         return ' '.join(parts)
 
-    def format_arg_name(self, arg: CommandArgument):
+    def format_arg_name(self, arg: CommandArgument) -> str:
+        """
+        Formatting the argument view according to its view(positional = arg, named = --arg, flag = -arg)
+        """
         if arg.arg_type == ArgumentType.NAMED:
-            return f"--{arg}"
+            return f"--{arg.name}"
         elif arg.arg_type == ArgumentType.FLAGS:
-            return f"-{arg}"
-        return arg
+            return f"-{arg.name}"
+        return arg.name
     

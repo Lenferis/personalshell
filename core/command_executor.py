@@ -1,29 +1,35 @@
 from .session import Session
-
+from .history_manager import HistoryManager
+from typing import Any, Dict
 
 class CommandExecutor:
+    """
+    Class of command executor
+    """
     def __init__(self):
         self.commands = {}
-        self.commands_aliases = {}
-        self.context = Session.load()
-    
-    def register(self, Command):
-        self.commands[Command.name] = {
-            "command": Command,
-            "aliases": Command.aliases
-        }
-    def execute(self, parse):
-        if parse['parse']['name'] not in self.commands_aliases:
-            return f"The command {parse['parse']['name']} doesn't exist."
-        command = self.commands[parse['parse']['name']]
-        return command.execute(parse, self.context)
-        # try:
-        #     if name not in self.commands_aliases:
-        #         return f"The command {name} doesn't exist."
-            
-        #     result = self.commands[name].execute()
-        #     self.logger(name, args, kwargs, flags, context, True, result)
-        #     return result
-        # except Exception as e:
-        #     self.error_logger(name, args, kwargs, flags, context, False, result)
+        self.commands_aliases = []
+        self.context = Session('./session').load()
+        self.logger = HistoryManager('./logs')
+    def register(self, Command: object) -> None:
+        """
+        Registration of the command in the executor for further detection in the request and execution
+        """
+        self.commands[Command.name] = Command
+        for alias in Command.aliases:
+            self.commands[alias] = Command
+    def execute(self, parse: Dict[str, Any]) -> Any: #[ec]
+        """
+        A function that accesses a command class and its executor functions. Basic function for project operation
+        """
+        print(self.context)
+        if parse['parse']['command'] not in self.commands:
+            return f"The command {parse['parse']['command']} doesn't exist."
+
+        result = self.commands[parse['parse']['command']].execute(parse, self.context)
+        self.logger.log_command_brief(parse['parse']['command'])
+        return result
+
+
+        
 
