@@ -24,16 +24,19 @@ class Command:
         self.description: str = "No description provided"
         self.usage: str = ""
         self.aliases: List[str] = []
-        self.subcommands: Dict[str] = {}
+        self.subcommands: Dict[str] = {
+            'name': {},
+            'aliases':{}
+        }
         self.argument: List[str] = []
     
     def add_subcommand(self, command: 'Command') -> None:
         """
         Method to add a subcommand for the given command. Similar to registration with the command executor
         """
-        self.subcommands[command.name] = command
+        self.subcommands['name'][command.name] = command
         for alias in command.aliases:
-            self.subcommands[alias] = command
+            self.subcommands['aliases'][alias] = command
 
     def add_argument(self, name: str, arg_type: ArgumentType, required: bool = True, default: Any = False, help: str = "No description provided") -> CommandArgument:
         """
@@ -60,7 +63,7 @@ class Command:
         The function of a command performer.
         It checks if there is a subcommand in the arguments and if there is, passes control to it, otherwise it performs its main function of the executor.
         """
-        if parse['parse']['args'][0] in self.subcommands:
+        if parse['parse']['args'][0] in self.subcommands['name'].update(self.subcommands['alises']):
             return self.subcommands[parse['parse']['args'][0]].execute(parse, context)
         return self.execute_main(parse, context)
 
@@ -85,13 +88,9 @@ class Command:
             help_list.append(f"  {self.format_arg_name(arg)}    {arg.help} {req}")
         help_list.append(f"Aliases: {', '.join(self.aliases)}")
 
-        help_list_subcom = set()
-        for key in self.subcommands.keys():
-            help_list_subcom.add(key)
         help_list.append(f"Subcommand:")
-
-        for scom in help_list_subcom:
-            help_list.append(f"  {scom.name}    {scom.description}")
+        for scom in self.subcommands['name']:
+            help_list.append(f"  {self.subcommands['name'][scom].name}    {self.subcommands['name'][scom].description}")
         
         return '\n'.join(help_list)
     def generate_usage(self) -> str:
@@ -99,7 +98,8 @@ class Command:
         Creates a usage string for the command, inserted into help
         """
         parts = [self.name]
-
+        if self.subcommands:
+            parts.append(f"(subcommands)")
         for arg in self.argument:
             if arg.arg_type == ArgumentType.POSITIONAL:
                 parts.append(f"<{arg.name}>" if arg.required else f"[{arg.name}]")
@@ -117,5 +117,6 @@ class Command:
             return f"--{arg.name}"
         elif arg.arg_type == ArgumentType.FLAGS:
             return f"-{arg.name}"
-        return arg.name
+        
+        return f"<{arg.name}>" if arg.required == True else f"[{arg.name}]"
     
