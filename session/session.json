@@ -1,0 +1,16 @@
+{
+    "vars": {},
+    "env": {
+        "set": "r",
+        "NAME": "Kirill",
+        "ROCK": "LINKINPARK",
+        "unset": "r",
+        "R": "100",
+        "r": "r"
+    },
+    "commands": [
+        "fdfd"
+    ],
+    "created_at": "2025-05-02T21:52:03.475560",
+    "updated_at": "2025-05-06T13:06:43.562262"
+}

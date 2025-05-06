@@ -1,0 +1,21 @@
+2025-04-22 10:35:26,323 | INFO | The command was executed copy
+2025-04-22 10:43:31,364 | INFO | {'command': 'copy', 'args': [], 'kwargs': [], 'flags': [], 'success': []}
+2025-04-22 22:13:25,277 | ERROR | Failed to execute the command copy, 'CommandExecutor' object has no attribute 'commands_aliases'
+2025-04-22 22:14:04,632 | ERROR | Failed to execute the command copy, 'CommandExecutor' object has no attribute 'commands_aliases'
+2025-04-22 22:39:03,419 | ERROR | Failed to execute the command copy, unhashable type: 'list'
+2025-04-22 22:40:49,304 | ERROR | Failed to execute the command copy, unhashable type: 'list'
+2025-04-22 22:52:34,698 | ERROR | Failed to execute the command copy, 'copy'
+2025-04-22 23:09:09,220 | INFO | The command was executed echo
+2025-04-22 23:09:21,467 | INFO | The command was executed echo
+2025-04-22 23:48:33,615 | INFO | The command was executed echo
+2025-04-22 23:50:33,361 | INFO | The command was executed echo
+2025-04-22 23:50:50,090 | INFO | The command was executed echo
+2025-04-23 00:03:51,587 | INFO | The command was executed echo
+2025-04-23 00:04:00,401 | INFO | The command was executed echo
+2025-04-23 00:04:14,962 | INFO | The command was executed echo
+2025-04-23 00:05:01,725 | INFO | The command was executed echo
+2025-04-23 00:05:09,728 | INFO | The command was executed echo
+2025-04-23 00:05:23,106 | INFO | The command was executed echo
+2025-04-23 00:05:28,431 | INFO | The command was executed echo
+2025-04-23 00:59:08,733 | INFO | The command was executed echo
+2025-04-23 01:03:23,201 | INFO | The command was executed echo 
