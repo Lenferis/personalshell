@@ -53,16 +53,12 @@ class Session:
         self.data["commands"].append(full_command)
         self.save()
     
-    def get_commands(self, index: int = None, slice: int = None) -> Any:
+    def get_commands(self, index: int = None) -> Any:
         """
         Retrieving a previously entered command
         """
-        if index:
-            return self.data["commands"][index]
-        elif slice:
-            return self.data["commands"][slice]
-        else:
-            return self.data["commands"]
+        return self.data["commands"][len(self.data["commands"]) - 1] if len(self.data["commands"]) < 10 else self.data["commands"][index]
+
     
     def get_variable(self, key: str, value: str) -> Any:
         """

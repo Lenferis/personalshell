@@ -1,0 +1,33 @@
+# github-dark.yaml
+meta:
+  name: "GitHub Dark"
+  author: "GitHub"
+  version: "1.0"
+  description: "Official GitHub Dark theme adaptation"
+
+font:
+  family: "Menlo"         # Стандартный шрифт GitHub
+  size: 12                # Базовый размер текста
+  weight: 400             # Нормальная толщина
+  italic: false           # Без курсива
+
+colors:
+  background: "#0d1117"   # Основной фон
+  color: "#c9d1d9"        # Основной цвет текста
+  selection_color: "#1a1f25" # Цвет выделения текста
+  cursor: "#c9d1d9"       # Цвет курсора
+
+border:
+  width: 1
+  color: "#30363d"        # Цвет границ
+  radius: 6               # Закругление углов
+
+padding: "8px 12px"       # Внутренние отступы
+
+scrollbar:
+  background: "#161b22"   # Фон скроллбара
+  width: 12
+  margin: 0
+  background_handle: "#30363d" # Цвет ползунка
+  height_handle: 30
+  border_radius_handle: 6

@@ -40,6 +40,6 @@ class HistoryCommand(Command):
             help="Number of commands to show"
         )
     def execute_main(self, parse, appcontext):
-        quantity = parse['args']['quantity'] if parse['args']['quantity'] else 10
-        command = appcontext.session.data['commands'].get_commands(quantity)
+        quantity = parse['parse']['args']['quantity'] if 'quantity' in parse['parse']['args'] else 10
+        command = appcontext.session.get_commands(quantity)
         return '\n'.join(command)

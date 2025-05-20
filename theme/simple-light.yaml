@@ -1,0 +1,10 @@
+meta:
+  name: "Simple Light"
+  author: "Your Name"
+  version: "1.0"
+
+  
+colors:
+  background: "#1E1E1E"    # Фон редактора
+  text: "#D4D4D4"          # Основной цвет текста
+  selection: "#264F78"     # Цвет выделения

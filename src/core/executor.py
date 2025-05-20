@@ -25,11 +25,13 @@ class CommandExecutor:
         """
         A function that accesses a command class and its executor functions. Basic function for project operation
         """
-        if parse['parse']['command'] not in self.commands:
-            return f"The command {parse['parse']['command']} doesn't exist."
+        if parse['parse']['command']:
+            if parse['parse']['command'] not in self.commands:
+                return f"The command {parse['parse']['command']} doesn't exist."
 
-        result = self.commands[parse['parse']['command']].execute(parse, appcontext)
-        return result
+            result = self.commands[parse['parse']['command']].execute(parse, appcontext)
+            return result
+        return ""
     
 
 

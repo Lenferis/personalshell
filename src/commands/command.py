@@ -28,7 +28,7 @@ class Command:
             'name': {},
             'aliases':{}
         }
-        self.is_subcommand = False
+        self.is_subcommand = False 
         self.argument: List[str] = []
     
     def add_subcommand(self, command: 'Command') -> None:

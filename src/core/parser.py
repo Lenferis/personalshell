@@ -12,11 +12,26 @@ class CommandParser:
         Main function of the command parser
         """
         if not input_string:
-            return {"command": "", "args": [], "kwargs": {}, "flags": []}
+            return {
+            "input_string": input_string,
+                "parse": {
+                    "command": "",
+                    "args": [],
+                    "kwargs": {},
+                    "flags": []
+                    }
+                }
         parts = self._split_input(input_string)
         if not parts:
-            return {"command": "", "args": [], "kwargs": {}, "flags": []}
-
+            return {
+            "input_string": input_string,
+                "parse": {
+                    "command": "",
+                    "args": [],
+                    "kwargs": {},
+                    "flags": []
+                    }
+                }
         command = parts[0]
         args = []
         kwargs = {}

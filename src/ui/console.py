@@ -8,6 +8,7 @@ from core.parser import CommandParser
 from core.appcontext import AppContext, Session, Config
 from core.register import CommandRegistry
 
+from ui.theme import ThemeManager
 
 
 
@@ -15,22 +16,24 @@ class Console(QTextEdit):
     def __init__(self):
         super().__init__()
         self.prompt = "> "
+
+        self.thememanager = ThemeManager(Config(), self)
         self.init_ui()
 
-        self.appcontext = AppContext(Session('./session'), {}, self, {})
+
+        self.appcontext = AppContext(Session('./session'), Config(), self, {})
+
         self.parser = CommandParser()
         self.executor = CommandExecutor()
         self.register = CommandRegistry()
         self.register.register_from_config()
-
         self.executor.register_builtin_commands(self.register)
 
-        print(self.register.command_classes, self.executor.commands)
+        
 
     def init_ui(self):
         self.show_prompt()
-        self.setStyleSheet("background: black; color: white;")
-        self.setFont(QFont("Courier New", 11))
+        self.thememanager.set_theme(Config().data['user']['theme']['current'])
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Return:
@@ -56,6 +59,7 @@ class Console(QTextEdit):
 
     def process_command(self):
         command = self.get_command()
+        self.appcontext.session.add_commands(command)
         parse = self.parser.parse(command)
         result = self.executor.execute(parse, self.appcontext)
 

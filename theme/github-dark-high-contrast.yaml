@@ -1,0 +1,36 @@
+# github-dark-high-contrast.yaml
+meta:
+  name: "GitHub Dark High Contrast"
+  author: "GitHub"
+  version: "2.0"
+  description: "High contrast version of GitHub Dark theme"
+
+font:
+  family: "Menlo"
+  size: 13                # Увеличенный размер для лучшей читаемости
+  weight: 500             # Полужирное начертание
+  italic: false
+
+colors:
+  background: "#010409"   # Почти черный фон
+  color: "#ffffff"        # Чистый белый текст
+  selection_color: "#1f6feb" # Ярко-синее выделение
+  cursor: "#58a6ff"       # Неоново-синий курсор
+  error: "#ff7b72"        # Ярко-красный для ошибок
+  accent: "#58a6ff"       # Акцентный цвет GitHub
+
+border:
+  width: 2                # Более толстые границы
+  color: "#30363d"        # Контрастные серые границы
+  radius: 6
+
+padding: "10px 14px"      # Увеличенные отступы
+
+scrollbar:
+  background: "#161b22"   # Темный фон скроллбара
+  width: 5               # Шире стандартного
+  margin: 0
+  background_handle: "#388bfd" # Ярко-синий ползунок
+  height_handle: 40       # Крупнее обычного
+  border_radius_handle: 8
+  hover: "#1f6feb"        # Эффект при наведении

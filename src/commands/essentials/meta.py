@@ -9,8 +9,8 @@ class VersionProgectCommand(Command):
         self.aliases = ["ver", "v"]
         self.subcommands = False
     
-    def execute_main(self, parse, context):
-        pass
+    def execute_main(self, parse, appcontext):
+        return appcontext.config.get_version()
 
 class HelpCommand(Command):
     def __init__(self):

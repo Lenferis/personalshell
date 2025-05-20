@@ -1,0 +1,36 @@
+# github-light.yaml
+meta:
+  name: "GitHub Light"
+  author: "GitHub"
+  version: "1.0"
+  description: "Official GitHub Light theme adaptation"
+
+font:
+  family: "SFMono-Regular"  # Системный шрифт GitHub для Mac/Linux
+  size: 12
+  weight: 400
+  italic: false
+
+colors:
+  background: "#ffffff"     # Чистый белый фон
+  color: "#24292e"          # Основной цвет текста GitHub
+  selection_color: "#d1d5da" # Цвет выделения как в веб-версии
+  cursor: "#0366d6"         # Синий курсор в стиле GitHub
+  error: "#cb2431"          # Красный для ошибок
+  accent: "#0366d6"         # Фирменный синий GitHub
+
+border:
+  width: 1
+  color: "#e1e4e8"         # Цвет границ как у репозиториев
+  radius: 6                # Закругление как у кнопок
+
+padding: "8px 12px"        # Стандартные отступы GitHub
+
+scrollbar:
+  background: "#f6f8fa"    # Фон как у боковой панели
+  width: 10
+  margin: 0
+  background_handle: "#c8e1ff" # Светло-синий ползунок
+  height_handle: 30
+  border_radius_handle: 5
+  hover: "#b3d4ff"         # Эффект наведения
