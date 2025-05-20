@@ -15,13 +15,13 @@ from ui.theme import ThemeManager
 class Console(QTextEdit):
     def __init__(self):
         super().__init__()
+        self.config = Config()
         self.prompt = "> "
 
-        self.thememanager = ThemeManager(Config(), self)
+        self.thememanager = ThemeManager(self.config, self)
         self.init_ui()
 
-
-        self.appcontext = AppContext(Session('./session'), Config(), self, {})
+        self.appcontext = AppContext(Session('./session'), self.config, self, {})
 
         self.parser = CommandParser()
         self.executor = CommandExecutor()

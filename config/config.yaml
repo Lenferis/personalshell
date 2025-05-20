@@ -32,7 +32,10 @@ modules:
   - commands.essentials.sctrl
   - commands.theme.theme
   plugins:
-  - ' '
+
+
+
+      
 user:
   theme:
     current: GitHub Light

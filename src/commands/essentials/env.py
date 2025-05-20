@@ -1,4 +1,4 @@
-from commands.command import Command, ArgumentType
+from component.command import Command, ArgumentType
 
 class EnvCommand(Command):
     def __init__(self):

@@ -1,4 +1,4 @@
-from commands.command import Command, ArgumentType
+from component.command import Command, ArgumentType
 import re, yaml
 
 class ThemeCommand(Command):

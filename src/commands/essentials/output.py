@@ -1,4 +1,4 @@
-from commands.command import Command, ArgumentType
+from component.command import Command, ArgumentType
 from typing import Any, Dict, List
 
 class Echo(Command):
@@ -6,7 +6,6 @@ class Echo(Command):
         super().__init__()
         self.name = "echo"
         self.description = ""
-        self.aliases = [""]
         self.register_argument()
 
     def register_argument(self):

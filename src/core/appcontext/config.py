@@ -17,6 +17,15 @@ class Config:
     def get_modulescore_path(self):
         return self.data["modules"]["core"]
     
+    def get_modulesplugin_path(self):
+        path_list = []
+        if self.data["modules"]["plugins"]:
+            for plugin in self.data["modules"]["plugins"]:
+                for plugin_name, plugin_data in plugin.items():
+                    if 'path' in plugin_data:
+                        path_list.append(plugin_data['path'])
+        return path_list
+    
     def commands_paths(self):
         return [Path(p) for p in self.data["paths"]["commands"]]
 

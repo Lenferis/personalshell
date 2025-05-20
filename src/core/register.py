@@ -2,14 +2,14 @@ import inspect
 import importlib
 from pathlib import Path
 
-from commands.command import Command
+from component.command import Command
+from component.plugin import Plugin
 from core.appcontext import Config
 
 
 class CommandRegistry:
     def __init__(self):
         self.command_classes = {}
-
     def register_from_module(self, module_name: str):
         """Регистрирует все команды из указанного модуля"""
         module = importlib.import_module(module_name)
@@ -19,18 +19,25 @@ class CommandRegistry:
                     self.command_classes[obj().name] = obj
                     for alias in obj().aliases:
                         self.command_classes[alias] = obj
+
+    def register_plugin_from_module(self, path):
+        """Регистрирует все команды из указанного модуля"""
+        spec = importlib.util.spec_from_file_location("my_module", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        for name, obj in inspect.getmembers(module):
+            if inspect.isclass(obj) and issubclass(obj, Command) and obj != Plugin:
+                if obj().is_subcommand == False:
+                    self.command_classes[obj().name] = obj
+                    for alias in obj().aliases:
+                        self.command_classes[alias] = obj
+
     
     def register_from_config(self):
         for module in Config().get_modulescore_path():
             self.register_from_module(module)
-
-    # def register_from_directory(self, dir_path: str):
-    #     """Автоматически регистрирует все команды из директории"""
-    #     for file in Path(dir_path).glob('**/*.py'):
-    #         module_path = f"commands.{Path(dir_path).name}.{file.name}"
-    #         # self.register_from_module(module_path)
-    #         print(module_path)
-
+        for plugin in Config().get_modulesplugin_path():
+            self.register_plugin_from_module(plugin)
     def get_all_commands(self):
         return self.command_classes
     
