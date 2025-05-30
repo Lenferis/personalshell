@@ -31,14 +31,11 @@ modules:
   - commands.essentials.output
   - commands.essentials.sctrl
   - commands.theme.theme
-  plugins:
-
-
-
-      
+  - commands.timer.timer
+  plugins: null
 user:
   theme:
-    current: GitHub Light
+    current: Simple Light
     available:
     - GitHub Dark
     - GitHub Dark High Contrast

@@ -7,6 +7,11 @@ class ArgumentType(Enum):
     NAMED = auto()
     FLAGS = auto()
 
+
+class ReturnType(Enum):
+    App = auto()
+    Text = auto()
+
 @dataclass
 class CommandArgument:
     name: str
@@ -61,25 +66,30 @@ class Command:
         for arg in self.argument:
             if arg.required and arg.name not in parse['parse']['kwargs']:
                 return f"Error: Missing required argument '{arg.name}'"
-            if arg.arg_type == ArgumentType.POSITIONAL and arg.name not in parse['parse']['args']:
+            if arg.arg_type == ArgumentType.POSITIONAL and arg.required and arg.name not in parse['parse']['args']:
+                print(1)
                 return f"Error: Missing required positional argument '{arg.name}'"
-        return None
+        return True
 
     def execute(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
         """
         The function of a command performer.
         It checks if there is a subcommand in the arguments and if there is, passes control to it, otherwise it performs its main function of the executor.
         """
+        validate = self.validate(parse, context)
+        if self.validate(parse, context) == True:
+            if parse['parse']['args']:
+                subcommand = parse['parse']['args'][0]
+                if subcommand in self.subcommands['name']:
+                    parse['parse']['args'] = parse['parse']['args'][1:]
+                    return self.subcommands['name'][subcommand].execute(parse, context)
+                elif subcommand in self.subcommands['aliases']:
+                    parse['parse']['args'] = parse['parse']['args'][1:]
+                    return self.subcommands['aliases'][subcommand].execute(parse, context)
+            return self.execute_main(parse, context)
+        else:
+            return validate
 
-        if parse['parse']['args']:
-            subcommand = parse['parse']['args'][0]
-            if subcommand in self.subcommands['name']:
-                parse['parse']['args'] = parse['parse']['args'][1:]
-                return self.subcommands['name'][subcommand].execute(parse, context)
-            elif subcommand in self.subcommands['aliases']:
-                parse['parse']['args'] = parse['parse']['args'][1:]
-                return self.subcommands['aliases'][subcommand].execute(parse, context)
-        return self.execute_main(parse, context)
 
     def execute_main(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
         """

@@ -50,6 +50,7 @@ class Session:
         """
         Adding a command that was entered in the session file
         """
+        
         self.data["commands"].append(full_command)
         self.save()
     

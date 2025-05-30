@@ -1,7 +1,7 @@
 import re
 from typing import Dict, List, Any, TypedDict
+
 class CommandParser:
-    
     def __init__(self):
         self.arg_pattern = re.compile(r'--(\w+)=(.*)') 
         self.flag_pattern = re.compile(r'-(\w+)')

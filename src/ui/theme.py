@@ -48,7 +48,7 @@ class ThemeApplier:
 
     def _apply_font(self, theme_data: dict) -> None:
         """Настраивает шрифт виджета"""
-        font_data = theme_data.get('font')
+        font_data = theme_data.get('font', {})
         font = QFont()
         font_family = font_data.get('family', default_theme['font']['family'])
         font.setFamily(font_family)

@@ -6,7 +6,7 @@ meta:
   description: "Official GitHub Light theme adaptation"
 
 font:
-  family: "SFMono-Regular"  # Системный шрифт GitHub для Mac/Linux
+  family: "Consolas"  # Системный шрифт GitHub для Mac/Linux
   size: 12
   weight: 400
   italic: false

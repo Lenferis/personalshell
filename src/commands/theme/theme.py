@@ -1,5 +1,9 @@
-from component.command import Command, ArgumentType
+from modules.command import Command, ArgumentType
+from modules.widgets.widget import Widget
+from modules.widgets.buttons import ButtonVertical
 import re, yaml
+from PyQt6.QtGui import QTextCursor, QMouseEvent, QColor, QTextCharFormat, QKeyEvent
+from PyQt6.QtCore import Qt, QTimer
 
 class ThemeCommand(Command):
     def __init__(self):
@@ -13,7 +17,180 @@ class ThemeCommand(Command):
     
     def execute_main(self, parse, appcontext):
         return '\n'.join(appcontext.console.thememanager.list_themes())
+
+
+
+
+
+class ThemeSetButtons(ButtonVertical):
+    def __init__(self, console, options, thememanager):
+        stop_method = "remove"
+        super().__init__(console, options, stop_method=stop_method)
+        self.thememanager = thememanager
+        self.start_theme = self.thememanager.current_theme.data['meta']['name']
+    def _render(self):
+        self._clear()
+        cursor = self.console.textCursor()
+        cursor.setPosition(self.get_start_pos())
+        for i, label in enumerate(self.options):
+            if self.active:
+                fmt = self.formats['selected'] if i == self.selected else self.formats['normal']
+                cursor.insertText(f"[ {label} ]\n", fmt)
+            else:
+                fmt = self.formats['inactive']
+                cursor.insertText(f"[ {label} ]\n", fmt)
+        self.console.setTextCursor(cursor)
+    def view_theme(self, select):
+        theme = self.options[select]
+        self.thememanager.set_theme(theme)
+    def use_theme(self, select):
+        theme = self.options[select]
+        self.thememanager.set_theme(theme)
+        self.stop()
+    def change_default_theme(self, select):
+        theme = self.options[select]
+    def handle_key(self, key: int) -> bool:
+        if not self.active:
+            return False
+        if key == Qt.Key.Key_Up:
+            self.selected = max(0, self.selected - 1)
+            self.view_theme(self.selected)
+            self._render()
+            return True
+        elif key == Qt.Key.Key_Down:
+            self.selected = min(len(self.options) - 1, self.selected + 1)
+            self.view_theme(self.selected)
+            self._render()
+            return True
+        elif key == Qt.Key.Key_Return:
+            self.use_theme(self.selected)
+            return True
+        elif key == Qt.Key.Key_Escape:
+            self.thememanager.set_theme(self.start_theme)
+            self.stop()
+            return True
+
     
+
+
+
+class SearchListWidget(Widget):
+    def __init__(self, console, config, thememanager, themes):
+        stop_method = "remove"
+        super().__init__(console)
+        self.config = config
+        self.thememanager = thememanager
+        self.start_theme = self.thememanager.current_theme.data['meta']['name']
+
+        self.items = themes
+        self.filtered_items = themes
+
+        
+        
+        
+        self.selected_index = self.items.index(self.start_theme)
+        self.items_per_page = 10
+        self.page = self.selected_index // self.items_per_page
+
+        self.query = ""
+        self.active = True
+
+
+
+        
+        self.formats = {
+            'query': self._create_format("#00D9FF"),
+            'normal': self._create_format("#00FF00"),
+            'selected': self._create_format("#FFFFFF", "#004400"),
+            'inactive': self._create_format("#888888")
+        }
+    def _render(self):
+        self._clear()
+        cursor = self.console.textCursor()
+        cursor.setPosition(self.get_start_pos())
+
+        cursor.insertText(f"Search: {self.query}_\n", self.formats['query'])
+        start = self.page * self.items_per_page
+        end = start + self.items_per_page
+        for i, item in enumerate(self.filtered_items[start:end]):
+            global_index = start + i
+            cursor.insertText(f"{'>' if global_index == self.selected_index else ''} {item}\n", self.formats['selected'] if global_index == self.selected_index else self.formats['normal'] )
+
+        total_pages = max(1, (len(self.filtered_items) - 1) // self.items_per_page + 1)
+        cursor.insertText(f"{self.page + 1} / {total_pages}", self._create_format("gray"))
+
+        cursor.insertText("\n↑/↓ select, ←/→ page select, Enter use, D use default, Esc close\n", self._create_format("gray"))
+        self.console.setTextCursor(cursor)
+
+    def view_theme(self, select):
+        theme = self.filtered_items[select]
+        self.thememanager.set_theme(theme)
+
+    def use_theme(self, select):
+        theme = self.filtered_items[select]
+        self.thememanager.set_theme(theme)
+        self.stop()
+        
+    def change_default_theme(self, select):
+        theme = self.filtered_items[select]
+        self.thememanager.set_theme(theme)
+        self.config.change_config(['user', 'theme', 'current'], theme)
+        self.stop()
+
+    def handle_key(self, event):
+        if not self.active:
+            return False
+        
+        key = event.key()
+        text = event.text()
+
+        if key == Qt.Key.Key_Escape:
+            self.thememanager.set_theme(self.start_theme)
+            self.stop()
+            return True
+        elif key == Qt.Key.Key_Backspace:
+            self.query = self.query[:-1]
+            self._filter()
+        elif key == Qt.Key.Key_Return:
+            selected_item = self.filtered_items[self.selected_index]
+            self.use_theme(self.selected_index)
+            return True
+        elif key == Qt.Key.Key_Left:
+            self.page = max(0, self.page - 1)
+            self.selected_index = self.page * self.items_per_page
+            self.view_theme(self.selected_index)
+        elif key == Qt.Key.Key_Right:
+            max_page = max(0, (len(self.filtered_items) - 1) // self.items_per_page)
+            self.page = min(max_page, self.page + 1)
+            self.selected_index = self.page * self.items_per_page
+            self.view_theme(self.selected_index)
+        elif key == Qt.Key.Key_Up:
+            self.selected_index = max(0, self.selected_index - 1)
+            selected_item = self.filtered_items[self.selected_index]
+            self.view_theme(self.selected_index)
+        elif key == Qt.Key.Key_Down:
+            self.selected_index = min(len(self.filtered_items) - 1, self.selected_index + 1)
+            self.view_theme(self.selected_index)
+            self.page = self.selected_index // self.items_per_page
+        elif key == Qt.Key.Key_Control:
+            self.change_default_theme(self.selected_index)
+            return True
+        else:
+            self.query += text
+            self._filter()
+        self._render()
+        return True
+
+    def _filter(self):
+        self.filtered_items = [item for item in self.items if self.query.lower() in item.lower()]
+        self.page = 0
+        self.cursor_index = 0
+        if not self.filtered_items:
+            self.filtered_items = ["(ничего не найдено)"]
+
+
+
+
 class ThemeSetCommand(Command):
     def __init__(self):
         super().__init__()
@@ -42,25 +219,30 @@ class ThemeSetCommand(Command):
     def execute_main(self, parse, appcontext):
         themes = appcontext.console.thememanager.themes
         thememanager = appcontext.console.thememanager
-
-        command = parse['input_string']
-        # Извлекаем тему (включая дефисы) до первого флага
-        match = re.match(r'^theme\s+set\s+(.+?)(?=\s+-|$)', command)
-        # Ищем только валидные флаги (после пробела)
-        flags = re.findall(r'\s+(-\w+)', command)
-    
-        if match:
-            theme = match.group(1).strip()
-            flags = [flag.replace('-',"") for flag in re.findall(r'\s+(-\w+)', command)]
+        if not parse['parse']['args']:
+            themelist = SearchListWidget(appcontext.console, appcontext.config, thememanager, list(themes.keys()))
+            appcontext.console.widget = themelist
+            themelist.show()
+            return 
         else:
-            return "Invalid command format. Usage: {self.usage}"
-        if theme in list(themes.keys()):
-            thememanager.set_theme(theme)
-            if 'd' in flags:
-                appcontext.config.change_config(['user', 'theme', 'current'], theme)
-            return f"Theme '{theme}' applied."
-        else:
-            return f"Theme '{theme}' not found. Available: {', '.join(appcontext.console.thememanager.themes.keys())}"
+            command = parse['input_string']
+            # Извлекаем тему (включая дефисы) до первого флага
+            match = re.match(r'^theme\s+set\s+(.+?)(?=\s+-|$)', command)
+            # Ищем только валидные флаги (после пробела)
+            flags = re.findall(r'\s+(-\w+)', command)
+        
+            if match:
+                theme = match.group(1).strip()
+                flags = [flag.replace('-',"") for flag in re.findall(r'\s+(-\w+)', command)]
+            else:
+                return "Invalid command format. Usage: {self.usage}"
+            if theme in list(themes.keys()):
+                thememanager.set_theme(theme)
+                if 'd' in flags:
+                    appcontext.config.change_config(['user', 'theme', 'current'], theme)
+                return f"Theme '{theme}' applied."
+            else:
+                return f"Theme '{theme}' not found. Available: {', '.join(appcontext.console.thememanager.themes.keys())}"
 
 class ThemeGetCommand(Command):
     def __init__(self):
@@ -94,3 +276,9 @@ class ThemeGetCommand(Command):
             return yaml.dump(thememanager.get_theme(theme_name), sort_keys=False, allow_unicode=True)
         else:
             return f"Theme '{match}' not found. Available: {', '.join(themes.keys())}"
+        
+
+
+
+
+

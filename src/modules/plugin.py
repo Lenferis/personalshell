@@ -1,4 +1,4 @@
-from component.command import Command
+from modules.command import Command
 from core.appcontext import Config
 from typing import Any, Dict, List
 

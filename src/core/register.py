@@ -2,8 +2,8 @@ import inspect
 import importlib
 from pathlib import Path
 
-from component.command import Command
-from component.plugin import Plugin
+from modules.command import Command
+from modules.plugin import Plugin
 from core.appcontext import Config
 
 

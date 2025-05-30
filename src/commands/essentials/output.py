@@ -1,4 +1,4 @@
-from component.command import Command, ArgumentType
+from modules.command import Command, ArgumentType
 from typing import Any, Dict, List
 
 class Echo(Command):
