@@ -1,5 +1,5 @@
-from modules.command import Command
-from core.appcontext import Config
+from src.modules.command import Command
+from src.core.appcontext import Config
 from typing import Any, Dict, List
 
 class Plugin(Command):

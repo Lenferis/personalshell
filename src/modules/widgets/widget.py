@@ -12,25 +12,29 @@ class Widget:
         self.stop_methods = {
             "deactivate": self.deactivate,
             "remove": self.remove,
-            "hide": self.hide
+            "remove_nonewline": self.hide_nonewline,
+            "hide": self.hide,
+            "hide_nonewline": self.hide_nonewline,
+            
         }
         self.stop_metod = ""
 
         self.active = True
         
-    def create_start_pos(self):
-        self.console.append("")
+    def create_start_pos(self, new_line = True):
+        if new_line == True:
+            self.console.append("")
         self.start_pos = self.console.document().blockCount() - 1
 
-    def print_promt(self):
-        if self.stop_method == self.deactivate:
-            cursor = self.console.textCursor()
-            cursor.setCharFormat(QTextCharFormat())
-            cursor.insertText(f"> ")
-        else:
+    def print_promt(self, new_line = True):
+        if new_line == True:
             cursor = self.console.textCursor()
             cursor.setCharFormat(QTextCharFormat())
             cursor.insertText(f"\n> ")
+        else:
+            cursor = self.console.textCursor()
+            cursor.setCharFormat(QTextCharFormat())
+            cursor.insertText(f"> ")
     
     def _create_format(self, fg, bg=None):
         fmt = QTextCharFormat()
@@ -39,8 +43,10 @@ class Widget:
             fmt.setBackground(QColor(bg))
         return fmt
 
-    def show(self):
-        self.create_start_pos()
+    def show(self, new_line = True):
+        self.active = True
+        self.console.widget = self
+        self.create_start_pos(new_line)
         self._render()
     
     def get_start_pos(self):
@@ -63,10 +69,11 @@ class Widget:
     def handle_key(self, key: int) -> bool:
         if not self.active:
             return False
+        
     def deactivate(self):
         self.active = False
         self._render()
-        self.print_promt()
+        self.print_promt(new_line = False)
         del self
 
     def remove(self):
@@ -74,10 +81,22 @@ class Widget:
         self._clear()
         self.print_promt()
         del self
+
+    def remove_nonewline(self):
+        self.active = False
+        self._clear()
+        self.print_promt(new_line = False)
+        del self
+
     def hide(self):
         self.active = False
         self._clear()
         self.print_promt()
+    
+    def hide_nonewline(self):
+        self.active = False
+        self._clear()
+        self.print_promt(new_line = False)
 
     def _select_item(self, result):
         pass

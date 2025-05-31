@@ -67,7 +67,6 @@ class Command:
             if arg.required and arg.name not in parse['parse']['kwargs']:
                 return f"Error: Missing required argument '{arg.name}'"
             if arg.arg_type == ArgumentType.POSITIONAL and arg.required and arg.name not in parse['parse']['args']:
-                print(1)
                 return f"Error: Missing required positional argument '{arg.name}'"
         return True
 

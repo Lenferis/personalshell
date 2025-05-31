@@ -3,11 +3,27 @@ from pathlib import Path
 
 class Config:
     def __init__(self):
-        self.config_path = Path(f"config/config.yaml")
+        self.config_path = {
+            'base': Path(f"src/config/config_base.yaml"),
+            'user': Path(f"config/config_user.yaml")
+            
+        }
+            
         self.data = self._load_config()
     
     def _load_config(self):
-        return yaml.safe_load(self.config_path.read_text(encoding="utf-8"))
+        def deep_merge(base_dict, user_dict):
+            result = base_dict.copy()
+            for key, value in user_dict.items():
+                if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                    result[key] = deep_merge(result[key], value)
+                else:
+                    result[key] = value
+            return result
+
+        base = yaml.safe_load(self.config_path['base'].read_text(encoding="utf-8"))
+        user = yaml.safe_load(self.config_path['user'].read_text(encoding="utf-8"))
+        return deep_merge(base, user)
     
     def get_version(self):
         return self.data["app"]["version"]

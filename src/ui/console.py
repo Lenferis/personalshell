@@ -3,12 +3,12 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QTextEdit
 from PyQt6.QtGui import QTextCursor, QFont, QKeyEvent
 from PyQt6.QtCore import Qt
 
-from core.executor import CommandExecutor
-from core.parser import CommandParser
-from core.appcontext import AppContext, Session, Config
-from core.register import CommandRegistry
+from src.core.executor import CommandExecutor
+from src.core.parser import CommandParser
+from src.core.appcontext import AppContext, Session, Config
+from src.core.register import CommandRegistry
 
-from ui.theme import ThemeManager
+from src.ui.theme import ThemeManager
 
 
 

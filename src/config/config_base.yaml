@@ -1,0 +1,22 @@
+app:
+  name: PyLine
+  version: 0.5.0
+  env: production
+  debug: false
+
+# Системные пути (критичные для работы приложения)
+paths:
+  commands:
+    - ./src/pccl/commands
+    - ./plugins
+
+# Настройки модулей (внутренняя логика)
+modules:
+  core:
+    - src.commands.essentials.env
+    - src.commands.essentials.meta
+    - src.commands.essentials.output
+    - src.commands.essentials.sctrl
+    - src.commands.theme.theme
+    - src.commands.timer.timer
+  plugins: null

@@ -2,9 +2,9 @@ import inspect
 import importlib
 from pathlib import Path
 
-from modules.command import Command
-from modules.plugin import Plugin
-from core.appcontext import Config
+from src.modules.command import Command
+from src.modules.plugin import Plugin
+from src.core.appcontext import Config
 
 
 class CommandRegistry:
