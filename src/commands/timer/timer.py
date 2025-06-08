@@ -195,6 +195,7 @@ class TimerWidget(Widget):
         # Global escape key handling
         if key == Qt.Key.Key_Escape:
             self.stop()
+            self.timer.stop()
             return True
         
         return True

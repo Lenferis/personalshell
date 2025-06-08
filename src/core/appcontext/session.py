@@ -93,7 +93,7 @@ class Session:
         Loading session variables from a file
         """
         if not self.session_dir.exists():
-            return self.save({},{},[])
+            return self.save()
         
         with open(self.session_dir, encoding='utf-8') as f:
             session = json.loads(f.read())

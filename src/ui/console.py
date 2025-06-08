@@ -1,4 +1,4 @@
-import sys
+import sys, re
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTextEdit
 from PyQt6.QtGui import QTextCursor, QFont, QKeyEvent
 from PyQt6.QtCore import Qt
@@ -74,7 +74,7 @@ class Console(QTextEdit):
             self.show_prompt()
 
     def get_command(self):
-        return self.toPlainText().split(self.prompt)[-1].strip()
+        return re.match(r'>(.*)', self.toPlainText().split("\n")[-1]).group(1)
 
     def show_prompt(self):
         self.append(self.prompt)

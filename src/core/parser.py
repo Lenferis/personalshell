@@ -11,6 +11,7 @@ class CommandParser:
         A function that parses a string and selects a command and arguments(positional, named and flags) from it.
         Main function of the command parser
         """
+        chars_to_remove = [">", "<"]
         if not input_string:
             return {
             "input_string": input_string,
@@ -21,7 +22,11 @@ class CommandParser:
                     "flags": []
                     }
                 }
-        parts = self._split_input(input_string)
+        input_string_nochars = input_string
+        print(input_string)
+        for char in chars_to_remove:
+            input_string_nochars = input_string_nochars.replace(char, '')
+        parts = self._split_input(input_string_nochars)
         if not parts:
             return {
             "input_string": input_string,
@@ -50,6 +55,7 @@ class CommandParser:
                 continue
 
             args.append(part)
+        
         return {
             "input_string": input_string,
                 "parse": {

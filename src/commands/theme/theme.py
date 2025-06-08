@@ -25,7 +25,7 @@ class ThemeCommand(Command):
         """
         return '\n'.join(appcontext.console.thememanager.list_themes())
 
-class SearchListWidget(Widget):
+class ThemeListWidget(Widget):
     """Interactive searchable list widget for theme selection."""
     def __init__(self, console, config, thememanager, themes):
         """
@@ -201,7 +201,7 @@ class ThemeSetCommand(Command):
         
         # Interactive mode if no theme specified
         if not parse['parse']['args']:
-            themelist = SearchListWidget(
+            themelist = ThemeListWidget(
                 appcontext.console, 
                 appcontext.config, 
                 thememanager, 

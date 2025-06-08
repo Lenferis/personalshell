@@ -19,4 +19,8 @@ modules:
     - src.commands.essentials.sctrl
     - src.commands.theme.theme
     - src.commands.timer.timer
+    - src.commands.stopwatch.stopwatch
+    - src.commands.file_system.file_commands
+    - src.commands.calendar.calendar
+    - src.commands.faq.faq
   plugins: null

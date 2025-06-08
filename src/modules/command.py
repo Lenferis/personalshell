@@ -64,10 +64,10 @@ class Command:
         For example, validation of arguments
         """
         for arg in self.argument:
-            if arg.required and arg.name not in parse['parse']['kwargs']:
+            if arg.arg_type != ArgumentType.POSITIONAL and arg.required and arg.name not in parse['parse']['kwargs']:
                 return f"Error: Missing required argument '{arg.name}'"
-            if arg.arg_type == ArgumentType.POSITIONAL and arg.required and arg.name not in parse['parse']['args']:
-                return f"Error: Missing required positional argument '{arg.name}'"
+            if not parse['parse']['args'] and arg.arg_type == ArgumentType.POSITIONAL and arg.required:
+                return f"Error: Missing required positional argument"
         return True
 
     def execute(self, parse: Dict[str, Any], context: Dict[str, Any]) -> Any:
